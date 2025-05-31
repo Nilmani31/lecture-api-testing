@@ -5,6 +5,8 @@ package org.example;
 
 import org.junit.jupiter.api.Test;
 
+import io.restassured.RestAssured;
+
 import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
@@ -12,9 +14,35 @@ import static org.hamcrest.Matchers.*;
 class JsonPlaceholderTest {
     @Test
     public void getExistingPost() {
+        var response = RestAssured
+            .get("https://jsonplaceholder.typicode.com/posts/1")
+            .then()
+            .statusCode(200)
+            .extract()
+            .response();
+        System.out.println(response.body().asPrettyString());
+
+        assertTrue(response.body().asPrettyString().contains());
+        /*System.out.println(respons.body().asPrettyString());
+        System.out.println(respons.statusCode());
+        assertEquals(200,respons.statusCode());*/
+
     }
 
     @Test
     public void createPost() {
+        var requestbody = """
+        {
+        "title" : "hello world"
+        }
+        """;
+        given()
+            .header("contact_type", "application/json")
+            .body(requestbody)
+            .post("https://jsonplaceholder.typicode.com/posts")
+            .then()
+            .body("title",equalTo("hello world"));
+
+        
     }
 }
